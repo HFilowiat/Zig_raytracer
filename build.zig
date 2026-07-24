@@ -16,8 +16,6 @@ pub fn build(b: *std.Build) void {
         .root_module = exe_mod,
     });
 
-    exe.root_module.linkSystemLibrary("glfw", .{});
-    exe.root_module.linkSystemLibrary("GL", .{});
     // exe.linkSystemLibrary("X11");
     // exe.linkSystemLibrary("Xrandr");
     // exe.linkSystemLibrary("Xi");
