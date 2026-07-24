@@ -10,16 +10,6 @@ A multithreaded path tracer written in Zig, based on the book series [Ray Tracin
 ## Build Requirements
 
 - Zig, tested on 0.16.0
-- [GLFW](https://www.glfw.org/) development libraries
-- OpenGL development libraries
-
-### Installing dependencies
-
-**Fedora:**
-
-```sh
-sudo dnf install glfw-devel mesa-libGL-devel
-```
 
 ## Build Instructions
 
