@@ -41,17 +41,17 @@ pub fn main() !void {
     //Scene
     var world = HittableList.init(allocator);
 
-    var materialGround = Lambertian.init(.{ 0.8, 0.8, 0.0 });
-    var materialCenter = Lambertian.init(.{ 0.1, 0.2, 0.5 });
-    var materialLeft = Metal.init(.{ 0.8, 0.8, 0.8 });
-    var materialRight = Metal.init(.{ 0.8, 0.6, 0.2 });
+    var materialGround = Lambertian.init(.{ 0.8, 0.8, 0.0, 0.0 });
+    var materialCenter = Lambertian.init(.{ 0.1, 0.2, 0.5, 0.0 });
+    var materialLeft = Metal.init(.{ 0.8, 0.8, 0.8, 0.0 });
+    var materialRight = Metal.init(.{ 0.8, 0.6, 0.2, 0.0 });
 
-    var ground = Sphere.init(.{ 0.0, -100.5, -1.0 }, materialGround.asMaterial(), 100.0);
-    var center = Sphere.init(.{ 0.0, 0.0, -1.2 }, materialCenter.asMaterial(), 0.5);
-    var left = Sphere.init(.{ -1.0, -0.3, -1.0 }, materialLeft.asMaterial(), 0.5);
-    var right = Sphere.init(.{ 1.0, 0.0, -1.0 }, materialRight.asMaterial(), 0.5);
-    var inLeft = Sphere.init(.{ -1.0, 0.0, -1.0 }, materialRight.asMaterial(), 0.3);
-    var behindCamera = Sphere.init(.{ 0.0, 0.0, 1.2 }, materialCenter.asMaterial(), 1);
+    var ground = Sphere.init(.{ 0.0, -100.5, -1.0, 0.0 }, materialGround.asMaterial(), 100.0);
+    var center = Sphere.init(.{ 0.0, 0.0, -1.2, 0.0 }, materialCenter.asMaterial(), 0.5);
+    var left = Sphere.init(.{ -1.0, -0.3, -1.0, 0.0 }, materialLeft.asMaterial(), 0.5);
+    var right = Sphere.init(.{ 1.0, 0.0, -1.0, 0.0 }, materialRight.asMaterial(), 0.5);
+    var inLeft = Sphere.init(.{ -1.0, 0.0, -1.0, 0.0 }, materialRight.asMaterial(), 0.3);
+    var behindCamera = Sphere.init(.{ 0.0, 0.0, 1.2, 0.0 }, materialCenter.asMaterial(), 1);
 
     try world.add(&ground);
     try world.add(&center);
@@ -65,7 +65,7 @@ pub fn main() !void {
     var cam: Camera = .{
         .aspectRatio = comptime 16.0 / 9.0,
         .imageWidth = 1920,
-        .samplesPerPixel = 80,
+        .samplesPerPixel = 500,
         .maxBounceDepth = 20,
     };
 

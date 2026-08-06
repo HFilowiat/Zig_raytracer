@@ -30,7 +30,7 @@ const material = @import("material.zig");
 
 pub const Camera = struct {
     //public in the original c++
-    aspectRatio: f64 = 1.0,
+    aspectRatio: f32 = 1.0,
     imageWidth: usize = 100,
     samplesPerPixel: usize = 10,
     maxBounceDepth: usize = 10,
@@ -41,12 +41,12 @@ pub const Camera = struct {
     pixel00_loc: Point3 = undefined,
     pixelDeltaU: Vec3 = undefined,
     pixelDeltaV: Vec3 = undefined,
-    pixelSamplesScale: f64 = undefined,
+    pixelSamplesScale: f32 = undefined,
 
     //Stuff that I've moved or added compered to c++
     white: Vec3 = @splat(1.0),
     black: Vec3 = @splat(0.0),
-    skyBlue: Vec3 = .{ 0.5, 0.7, 1.0 },
+    skyBlue: Vec3 = .{ 0.5, 0.7, 1.0, 0.0 },
 
     const JobContext = struct {
         cam: *Camera,
@@ -59,6 +59,7 @@ pub const Camera = struct {
     //Does the rendering
     //NOTE: If I didn't make this multithreaded implementation fucked up gpt style it will be a miracle
     fn processRows(ctx: JobContext, stderr: anytype) !void {
+        @setFloatMode(.optimized);
         const cam = ctx.cam;
         const world = ctx.world;
         const buffer = ctx.buffer;
@@ -141,26 +142,26 @@ pub const Camera = struct {
     }
 
     fn init(self: *Camera) !void {
-        const imageHeightFloat: f64 = @as(f64, @floatFromInt(self.imageWidth)) / self.aspectRatio;
+        const imageHeightFloat: f32 = @as(f32, @floatFromInt(self.imageWidth)) / self.aspectRatio;
         self.imageHeight = @intFromFloat(imageHeightFloat);
         if (self.imageHeight < 1) {
             self.imageHeight = 1;
         }
 
-        self.pixelSamplesScale = 1.0 / @as(f64, @floatFromInt(self.samplesPerPixel));
+        self.pixelSamplesScale = 1.0 / @as(f32, @floatFromInt(self.samplesPerPixel));
 
-        const focalLength: f64 = 1.0;
-        const viewportHeight: f64 = 2.0;
-        const viewportWidth: f64 = viewportHeight * @as(f64, @floatFromInt(self.imageWidth)) / @as(f64, @floatFromInt(self.imageHeight));
+        const focalLength: f32 = 1.0;
+        const viewportHeight: f32 = 2.0;
+        const viewportWidth: f32 = viewportHeight * @as(f32, @floatFromInt(self.imageWidth)) / @as(f32, @floatFromInt(self.imageHeight));
         self.center = @splat(0.0);
 
-        const viewportU: Vec3 = .{ viewportWidth, 0.0, 0.0 };
-        const viewportV: Vec3 = .{ 0.0, -viewportHeight, 0.0 };
+        const viewportU: Vec3 = .{ viewportWidth, 0.0, 0.0, 0.0 };
+        const viewportV: Vec3 = .{ 0.0, -viewportHeight, 0.0, 0.0 };
 
-        self.pixelDeltaU = viewportU / @as(Vec3, @splat(@as(f64, @floatFromInt(self.imageWidth))));
-        self.pixelDeltaV = viewportV / @as(Vec3, @splat(@as(f64, @floatFromInt(self.imageHeight))));
+        self.pixelDeltaU = viewportU / @as(Vec3, @splat(@as(f32, @floatFromInt(self.imageWidth))));
+        self.pixelDeltaV = viewportV / @as(Vec3, @splat(@as(f32, @floatFromInt(self.imageHeight))));
 
-        const viewportUpperLeft: Vec3 = self.center - @Vector(3, f64){ 0.0, 0.0, focalLength } - viewportU / @as(Vec3, @splat(2.0)) - viewportV / @as(Vec3, @splat(2.0));
+        const viewportUpperLeft: Vec3 = self.center - vec3.vec3(0.0, 0.0, focalLength) - viewportU / @as(Vec3, @splat(2.0)) - viewportV / @as(Vec3, @splat(2.0));
 
         self.pixel00_loc = viewportUpperLeft + self.pixelDeltaU * @as(Vec3, @splat(0.5)) + self.pixelDeltaV * @as(Vec3, @splat(0.5));
     }
@@ -168,17 +169,19 @@ pub const Camera = struct {
     inline fn sampleSquare(self: *Camera) Vec3 {
         _ = self;
         return .{
-            rtweekend.floatRangeLessThan(f64, -0.5, 0.5),
-            rtweekend.floatRangeLessThan(f64, -0.5, 0.5),
+            rtweekend.floatRangeLessThan(f32, -0.5, 0.5),
+            rtweekend.floatRangeLessThan(f32, -0.5, 0.5),
+            0.0,
             0.0,
         };
     }
 
     inline fn getRay(self: *Camera, x: usize, y: usize) Ray {
+        @setFloatMode(.optimized);
         const offset = self.sampleSquare();
 
-        const xFloat: f64 = @as(f64, @floatFromInt(x));
-        const yFloat: f64 = @as(f64, @floatFromInt(y));
+        const xFloat: f32 = @as(f32, @floatFromInt(x));
+        const yFloat: f32 = @as(f32, @floatFromInt(y));
 
         const pixelSample = self.pixel00_loc + self.pixelDeltaU * @as(Vec3, @splat(xFloat + offset[0])) + self.pixelDeltaV * @as(Vec3, @splat(yFloat + offset[1]));
 
@@ -187,6 +190,7 @@ pub const Camera = struct {
     }
 
     fn rayColor(self: *Camera, r: Ray, depth: usize, world: *HittableList) Color {
+        @setFloatMode(.optimized);
         var currentRay = r;
         var currentDepth = depth;
         //Accumulates color from all bounces, each hit multiplies this by the material's attenuation color

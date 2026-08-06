@@ -55,6 +55,7 @@ pub const Lambertian = struct {
     }
 
     pub fn scatter(self: *Lambertian, r_in: Ray, rec: *const HitRecord, attenuation: *Color, scattered: *Ray) bool {
+        @setFloatMode(.optimized);
         _ = r_in;
 
         var scatterDirection = rec.normal + vec3.randomUnit();
@@ -94,6 +95,7 @@ pub const Metal = struct {
         };
     }
     pub fn scatter(self: *Metal, r_in: Ray, rec: *const HitRecord, attenuation: *Color, scattered: *Ray) bool {
+        @setFloatMode(.optimized);
         const reflected = vec3.reflect(r_in.direction, rec.normal);
         scattered.* = Ray.init(rec.p, reflected);
         attenuation.* = self.albedo;

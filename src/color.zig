@@ -7,7 +7,7 @@ pub const Color = Vec3;
 
 const Interval = @import("interval.zig").interval;
 
-inline fn linearToGamma(linearComponent: f64) f64 {
+inline fn linearToGamma(linearComponent: f32) f32 {
     if (linearComponent > 0.0) {
         return std.math.sqrt(linearComponent);
     }
@@ -15,9 +15,9 @@ inline fn linearToGamma(linearComponent: f64) f64 {
 }
 
 pub fn colorToBytes(pixel_color: Color) [3]u8 {
-    var r: f64 = pixel_color[0];
-    var g: f64 = pixel_color[1];
-    var b: f64 = pixel_color[2];
+    var r: f32 = pixel_color[0];
+    var g: f32 = pixel_color[1];
+    var b: f32 = pixel_color[2];
 
     r = linearToGamma(r);
     g = linearToGamma(g);

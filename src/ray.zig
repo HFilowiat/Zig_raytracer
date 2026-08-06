@@ -21,7 +21,7 @@ pub const Ray = struct {
         return self.direction;
     }
 
-    pub fn at(self: Ray, t: f64) Point3 {
+    pub fn at(self: Ray, t: f32) Point3 {
         return self.origin + self.direction * @as(Vec3, @splat(t));
     }
 };
