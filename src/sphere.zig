@@ -18,18 +18,18 @@ const Material = material.Material;
 
 pub const Sphere = struct {
     center: Vec3,
-    radius: f64,
+    radius: f32,
     mat: Material,
 
-    pub fn init(center: Point3, mat: Material, radius: f64) Sphere {
+    pub fn init(center: Point3, mat: Material, radius: f32) Sphere {
         return Sphere{ .center = center, .mat = mat, .radius = radius };
     }
 
     pub fn hit(self: *const @This(), r: Ray, ray_t: Interval, rec: *HitRecord) bool {
         const oc: Vec3 = self.center - r.origin;
-        const a: f64 = vec3.lengthSquared(r.directionValue());
-        const h: f64 = vec3.dot(r.directionValue(), oc);
-        const c: f64 = vec3.lengthSquared(oc) - self.radius * self.radius;
+        const a: f32 = vec3.lengthSquared(r.directionValue());
+        const h: f32 = vec3.dot(r.directionValue(), oc);
+        const c: f32 = vec3.lengthSquared(oc) - self.radius * self.radius;
 
         const discriminant = h * h - a * c;
         if (discriminant < 0) {

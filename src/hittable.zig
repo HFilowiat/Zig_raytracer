@@ -15,7 +15,7 @@ const Material = material.Material;
 pub const hitRecord = struct {
     p: Point3,
     normal: Vec3,
-    t: f64,
+    t: f32,
     frontFace: bool,
     mat: Material,
 
