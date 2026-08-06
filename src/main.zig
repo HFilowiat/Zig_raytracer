@@ -10,14 +10,13 @@ const Color = color.Color;
 const ray = @import("ray.zig");
 const Ray = ray.Ray;
 
-const hittable = @import("hittable.zig");
-const HitRecord = hittable.hitRecord;
-const Hittable = hittable.Hittable;
+const hitRecord = @import("hitRecord.zig");
+const HitRecord = hitRecord.hitRecord;
 
 const rtweekend = @import("rtweekend.zig");
 
-const hittable_list = @import("hittable_list.zig");
-const HittableList = hittable_list.HittableList;
+const scene = @import("scene.zig");
+const HittableList = scene.HittableList;
 
 const sphere = @import("sphere.zig");
 const Sphere = sphere.Sphere;
@@ -28,8 +27,7 @@ const camera = @import("camera.zig");
 const Camera = camera.Camera;
 
 const material = @import("material.zig");
-const Lambertian = material.Lambertian;
-const Metal = material.Metal;
+const Material = material.Material;
 
 pub fn main() !void {
     var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{});
@@ -40,25 +38,26 @@ pub fn main() !void {
 
     //Scene
     var world = HittableList.init(allocator);
+    defer world.deinit();
 
-    var materialGround = Lambertian.init(.{ 0.8, 0.8, 0.0, 0.0 });
-    var materialCenter = Lambertian.init(.{ 0.1, 0.2, 0.5, 0.0 });
-    var materialLeft = Metal.init(.{ 0.8, 0.8, 0.8, 0.0 });
-    var materialRight = Metal.init(.{ 0.8, 0.6, 0.2, 0.0 });
+    const materialGround: Material = .{ .lambertian = .{ .albedo = .{ 0.8, 0.8, 0.0, 0.0 } } };
+    const materialCenter: Material = .{ .lambertian = .{ .albedo = .{ 0.1, 0.2, 0.5, 0.0 } } };
+    const materialLeft: Material = .{ .metal = .{ .albedo = .{ 0.8, 0.8, 0.8, 0.0 } } };
+    const materialRight: Material = .{ .metal = .{ .albedo = .{ 0.8, 0.6, 0.2, 0.0 } } };
 
-    var ground = Sphere.init(.{ 0.0, -100.5, -1.0, 0.0 }, materialGround.asMaterial(), 100.0);
-    var center = Sphere.init(.{ 0.0, 0.0, -1.2, 0.0 }, materialCenter.asMaterial(), 0.5);
-    var left = Sphere.init(.{ -1.0, -0.3, -1.0, 0.0 }, materialLeft.asMaterial(), 0.5);
-    var right = Sphere.init(.{ 1.0, 0.0, -1.0, 0.0 }, materialRight.asMaterial(), 0.5);
-    var inLeft = Sphere.init(.{ -1.0, 0.0, -1.0, 0.0 }, materialRight.asMaterial(), 0.3);
-    var behindCamera = Sphere.init(.{ 0.0, 0.0, 1.2, 0.0 }, materialCenter.asMaterial(), 1);
+    var ground = Sphere.init(.{ 0.0, -100.5, -1.0, 0.0 }, materialGround, 100.0);
+    var center = Sphere.init(.{ 0.0, 0.0, -1.2, 0.0 }, materialCenter, 0.5);
+    var left = Sphere.init(.{ -1.0, -0.3, -1.0, 0.0 }, materialLeft, 0.5);
+    var right = Sphere.init(.{ 1.0, 0.0, -1.0, 0.0 }, materialRight, 0.5);
+    var inLeft = Sphere.init(.{ -1.0, 0.0, -1.0, 0.0 }, materialRight, 0.3);
+    var behindCamera = Sphere.init(.{ 0.0, 0.0, 1.2, 0.0 }, materialCenter, 1);
 
-    try world.add(&ground);
-    try world.add(&center);
-    try world.add(&left);
-    try world.add(&right);
-    try world.add(&inLeft);
-    try world.add(&behindCamera);
+    try world.addSphere(&ground);
+    try world.addSphere(&center);
+    try world.addSphere(&left);
+    try world.addSphere(&right);
+    try world.addSphere(&inLeft);
+    try world.addSphere(&behindCamera);
 
     //Render settings
     //TODO: pull this from a file at runtime, so there's no need to recompile

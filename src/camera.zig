@@ -10,21 +10,15 @@ const Color = color.Color;
 const ray = @import("ray.zig");
 const Ray = ray.Ray;
 
-const hittable = @import("hittable.zig");
-const HitRecord = hittable.hitRecord;
-const Hittable = hittable.Hittable;
+const hitRecord = @import("hitRecord.zig");
+const HitRecord = hitRecord.hitRecord;
 
 const rtweekend = @import("rtweekend.zig");
 
-const hittable_list = @import("hittable_list.zig");
-const HittableList = hittable_list.HittableList;
-
-const sphere = @import("sphere.zig");
-const Sphere = sphere.Sphere;
-
 const Interval = @import("interval.zig").interval;
 
-const material = @import("material.zig");
+const scene = @import("scene.zig");
+const HittableList = scene.HittableList;
 
 //TODO: Look at this file and rewrite into something more sensible
 
@@ -50,7 +44,7 @@ pub const Camera = struct {
 
     const JobContext = struct {
         cam: *Camera,
-        world: *HittableList,
+        world: *const HittableList,
         buffer: []u8,
         rowCounter: *usize,
         totalRows: usize,
@@ -61,7 +55,7 @@ pub const Camera = struct {
     fn processRows(ctx: JobContext, stderr: anytype) !void {
         @setFloatMode(.optimized);
         const cam = ctx.cam;
-        const world = ctx.world;
+        const world: *const HittableList = ctx.world;
         const buffer = ctx.buffer;
 
         var prevProgress: usize = 0;
@@ -99,7 +93,7 @@ pub const Camera = struct {
     }
 
     ///Handles the threads and write loop
-    pub fn render(self: *Camera, world: *HittableList, writer: anytype, stderr: anytype) !void {
+    pub fn render(self: *Camera, world: *const HittableList, writer: anytype, stderr: anytype) !void {
         try self.init();
 
         //PPM file header
@@ -189,7 +183,7 @@ pub const Camera = struct {
         return Ray.init(self.center, rayDirection);
     }
 
-    fn rayColor(self: *Camera, r: Ray, depth: usize, world: *HittableList) Color {
+    fn rayColor(self: *Camera, r: Ray, depth: usize, world: *const HittableList) Color {
         @setFloatMode(.optimized);
         var currentRay = r;
         var currentDepth = depth;
@@ -207,7 +201,7 @@ pub const Camera = struct {
                 var scattered: Ray = undefined;
 
                 //determine if ray bounced or got absorbed
-                if (rec.mat.scatter(currentRay, &rec, &attenuation, &scattered)) {
+                if (rec.mat.scatter(currentRay, rec.p, rec.normal, &attenuation, &scattered)) {
                     //blend the color of what ever has been git with accumulated ray color
                     accumColor = accumColor * attenuation;
                     currentRay = scattered;
