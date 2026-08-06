@@ -20,5 +20,6 @@ pub fn getRand() std.Random {
 //I just might be blind though
 //A wrapper is fine for this I guess
 pub fn floatRangeLessThan(comptime T: type, at_least: T, less_than: T) T {
+    @setFloatMode(.optimized);
     return at_least + getRand().float(T) * (less_than - at_least);
 }

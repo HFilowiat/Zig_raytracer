@@ -59,6 +59,7 @@ pub const Camera = struct {
     //Does the rendering
     //NOTE: If I didn't make this multithreaded implementation fucked up gpt style it will be a miracle
     fn processRows(ctx: JobContext, stderr: anytype) !void {
+        @setFloatMode(.optimized);
         const cam = ctx.cam;
         const world = ctx.world;
         const buffer = ctx.buffer;
@@ -176,6 +177,7 @@ pub const Camera = struct {
     }
 
     inline fn getRay(self: *Camera, x: usize, y: usize) Ray {
+        @setFloatMode(.optimized);
         const offset = self.sampleSquare();
 
         const xFloat: f32 = @as(f32, @floatFromInt(x));
@@ -188,6 +190,7 @@ pub const Camera = struct {
     }
 
     fn rayColor(self: *Camera, r: Ray, depth: usize, world: *HittableList) Color {
+        @setFloatMode(.optimized);
         var currentRay = r;
         var currentDepth = depth;
         //Accumulates color from all bounces, each hit multiplies this by the material's attenuation color

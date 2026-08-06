@@ -26,10 +26,12 @@ pub fn divide(self: Vec3, d: f32) Vec3 {
 }
 
 pub fn lengthSquared(self: Vec3) f32 {
+    @setFloatMode(.optimized);
     return @reduce(.Add, self * self);
 }
 
 pub fn length(self: Vec3) f32 {
+    @setFloatMode(.optimized);
     return @sqrt(lengthSquared(self));
 }
 
@@ -38,11 +40,13 @@ pub fn unit(self: Vec3) Vec3 {
 }
 
 pub fn nearZero(self: Vec3) bool {
+    @setFloatMode(.optimized);
     const s: f32 = 1e-8;
     return @reduce(.And, @abs(self) < @as(Vec3, @splat(s)));
 }
 
 pub fn dot(a: Vec3, b: Vec3) f32 {
+    @setFloatMode(.optimized);
     return @reduce(.Add, a * b);
 }
 
@@ -51,6 +55,7 @@ pub fn lerp(a: Vec3, b: Vec3, t: f32) Vec3 {
 }
 
 pub fn reflect(v: Vec3, n: Vec3) Vec3 {
+    @setFloatMode(.optimized);
     return v - n * @as(Vec3, @splat(2.0 * dot(v, n)));
 }
 
@@ -63,6 +68,7 @@ pub fn refract(uv: Vec3, n: Vec3, etaiOverEtat: f32) Vec3 {
 }
 
 pub fn randomRangeLessThan(at_least: f32, less_than: f32) Vec3 {
+    @setFloatMode(.optimized);
     return .{
         rtweekend.floatRangeLessThan(f32, at_least, less_than),
         rtweekend.floatRangeLessThan(f32, at_least, less_than),
@@ -72,6 +78,7 @@ pub fn randomRangeLessThan(at_least: f32, less_than: f32) Vec3 {
 }
 
 pub fn randomUnit() Vec3 {
+    @setFloatMode(.optimized);
     while (true) {
         const randomVec = randomRangeLessThan(-1.0, 1.0);
         const lengthSqrd = lengthSquared(randomVec);
@@ -82,6 +89,7 @@ pub fn randomUnit() Vec3 {
 }
 
 pub fn randomOnHemisphere(normal: Vec3) Vec3 {
+    @setFloatMode(.optimized);
     const onUnitSphere = randomUnit();
     if (dot(onUnitSphere, normal) > 0.0) {
         return onUnitSphere;

@@ -26,6 +26,7 @@ pub const Sphere = struct {
     }
 
     pub fn hit(self: *const @This(), r: Ray, ray_t: Interval, rec: *HitRecord) bool {
+        @setFloatMode(.optimized);
         const oc: Vec3 = self.center - r.origin;
         const a: f32 = vec3.lengthSquared(r.directionValue());
         const h: f32 = vec3.dot(r.directionValue(), oc);
