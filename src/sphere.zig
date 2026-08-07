@@ -1,5 +1,3 @@
-const std = @import("std");
-
 const vec3 = @import("vec3.zig");
 const Vec3 = vec3.Vec3;
 const Point3 = vec3.Vec3;
@@ -7,9 +5,8 @@ const Point3 = vec3.Vec3;
 const ray = @import("ray.zig");
 const Ray = ray.Ray;
 
-const hittable = @import("hittable.zig");
-const HitRecord = hittable.hitRecord;
-const Hittable = hittable.Hittable;
+const hitRecord = @import("hitRecord.zig");
+const HitRecord = hitRecord.hitRecord;
 
 const Interval = @import("interval.zig").interval;
 
@@ -50,9 +47,5 @@ pub const Sphere = struct {
         rec.setFaceNormal(r, outwardNormal);
         rec.mat = self.mat;
         return true;
-    }
-
-    pub fn asHittable(self: *const @This()) Hittable {
-        return Hittable{ .vtable = @ptrCast(&self.hit) };
     }
 };
