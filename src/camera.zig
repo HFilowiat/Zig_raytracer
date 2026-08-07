@@ -163,8 +163,8 @@ pub const Camera = struct {
     inline fn sampleSquare(self: *Camera) Vec3 {
         _ = self;
         return .{
-            rtweekend.floatRangeLessThan(f32, -0.5, 0.5),
-            rtweekend.floatRangeLessThan(f32, -0.5, 0.5),
+            rtweekend.floatRangeLessThan(-0.5, 0.5),
+            rtweekend.floatRangeLessThan(-0.5, 0.5),
             0.0,
             0.0,
         };

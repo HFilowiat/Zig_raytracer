@@ -60,7 +60,7 @@ pub fn main() !void {
     try world.addSphere(&behindCamera);
 
     //Render settings
-    //TODO: pull this from a file at runtime, so there's no need to recompile
+    //TODO: pull this from CLI, so there's no need to recompile
     var cam: Camera = .{
         .aspectRatio = comptime 16.0 / 9.0,
         .imageWidth = 1920,
