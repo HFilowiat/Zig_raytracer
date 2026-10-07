@@ -3,13 +3,13 @@
 A multithreaded path tracer written in Zig, based on the book series [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
 
 ## Difrences from the series
-- SIMD vector math
-- Multithreaded rendering
+- SIMD vector math for some parts
+- A basic multithreaded rendering method
 - PPM image output is in binary
 
 ## Example renders
 
-All renders are done on a ReleaseFast build The format is converted from .ppm to .png using ImageMagick. Rendered on a i7-9850H, so render is done on 12 threads.
+All renders are done on a ReleaseFast build. The format was converted from `.ppm` to `.png` using ImageMagick, since github doesn't display `.ppm` and I'm too lazy to code a different format in. Rendered on a i7-9850H (12 threads).
 
 ![Example render #1](images/example_500.png)
 ![Example render #1 settings](images/example_500_render_info.png)
