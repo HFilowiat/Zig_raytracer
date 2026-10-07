@@ -24,7 +24,7 @@ Reducing the spp down to 200 gets the render time down to ~7s but with visible n
 
 ## Build Requirements
 
-- Zig, tested on 0.16.0
+- Zig, tested on 0.17.0
 
 ## Build Instructions
 
