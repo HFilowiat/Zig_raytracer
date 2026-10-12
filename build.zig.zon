@@ -35,7 +35,12 @@
     // `zig build --fetch` can be used to fetch all dependencies of a package, recursively.
     // Once all dependencies are fetched, `zig build` no longer requires
     // internet connectivity.
-    .dependencies = .{},
+    .dependencies = .{
+        .chilli = .{
+            .url = "https://github.com/CogitatorTech/chilli/archive/v0.4.0.tar.gz",
+            .hash = "chilli-0.4.0-c19PrpzYAQAByfO0ayR5w2mpw8ncare-Lk6Uu0E8tjwf",
+        },
+    },
     .paths = .{
         "build.zig",
         "build.zig.zon",
