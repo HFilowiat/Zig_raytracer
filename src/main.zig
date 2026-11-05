@@ -119,7 +119,7 @@ fn renderExec(ctx: chilli.CommandContext) !void {
 
     //Render wraped in a clock to measure time, I'm unsure how accurate this is
     const render_start = std.Io.Clock.awake.now(data.io);
-    try cam.render(data.allocator, data.world, out_file, stderr);
+    try cam.render(data.io, data.allocator, data.world, out_file);
     const render_end = std.Io.Clock.awake.now(data.io);
     const render_duration = render_start.durationTo(render_end);
 

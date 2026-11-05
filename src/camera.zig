@@ -46,22 +46,20 @@ pub const Camera = struct {
         cam: *Camera,
         world: *const HittableList,
         buffer: []u8,
-        rowCounter: *usize,
+        rowCounter: *std.atomic.Value(usize),
         totalRows: usize,
+        progress: std.Progress.Node,
     };
 
     //Does the rendering
-    //NOTE: If I didn't make this multithreaded implementation fucked up gpt style it will be a miracle
-    fn processRows(ctx: JobContext, stderr: anytype) !void {
+    fn processRows(ctx: JobContext) !void {
         @setFloatMode(.optimized);
         const cam = ctx.cam;
         const world: *const HittableList = ctx.world;
         const buffer = ctx.buffer;
 
-        var prevProgress: usize = 0;
-
         while (true) {
-            const y = @atomicRmw(usize, ctx.rowCounter, .Add, 1, .seq_cst);
+            const y = ctx.rowCounter.fetchAdd(1, .monotonic);
             if (y >= ctx.totalRows) break;
 
             for (0..cam.imageWidth) |x| {
@@ -78,41 +76,35 @@ pub const Camera = struct {
                 buffer[idx + 1] = bytes[1];
                 buffer[idx + 2] = bytes[2];
             }
-
-            //The threads overwrite each other here
-            //It makes the counter 'flicker' a bit sometimes
-            //but that's fine since I just want to know the render isn't stuck
-            //Idealy each thread would do it's own progress report, but I'm lazy
-            const progress: usize = (y * 100) / ctx.totalRows;
-            if (progress != (prevProgress)) {
-                prevProgress = progress;
-                stderr.print("{}%\r", .{progress}) catch {};
-                stderr.flush() catch {};
-            }
+            ctx.progress.completeOne();
         }
     }
 
     ///Handles the threads and write loop
     pub fn render(
         self: *Camera,
+        io: std.Io,
         allocator: std.mem.Allocator,
         world: *const HittableList,
         writer: anytype,
-        stderr: anytype,
     ) !void {
         try self.init();
 
         //PPM file header
         try writer.print("P6\n{0} {1}\n255\n", .{ self.imageWidth, self.imageHeight });
 
+        const progress = std.Progress.start(io, .{ .root_name = "render" });
+        defer progress.end();
+
+        const rows = progress.start("rows", self.imageHeight);
+        defer rows.end();
+
         const totalPixels = self.imageHeight * self.imageWidth;
 
-        var rowCounter: usize = 0;
+        var rowCounter: std.atomic.Value(usize) = .init(0);
 
         //TODO: allow passing number of threads as cli arg instead of getting all of them always
         const numThreads = std.Thread.getCpuCount() catch 1;
-        const threads = try allocator.alloc(std.Thread, numThreads);
-        defer allocator.free(threads);
 
         // Allocate raw pixel buffer for binary output
         const pixelBytes = try allocator.alloc(u8, totalPixels * 3);
@@ -125,17 +117,17 @@ pub const Camera = struct {
             .buffer = pixelBytes,
             .rowCounter = &rowCounter,
             .totalRows = self.imageHeight,
+            .progress = rows,
         };
 
-        //Spawn threads
-        for (0..numThreads) |i| {
-            threads[i] = try std.Thread.spawn(.{}, processRows, .{ ctx, stderr });
+        var group: std.Io.Group = .init;
+        defer group.cancel(io);
+
+        for (0..numThreads) |_| {
+            try group.concurrent(io, processRows, .{ctx});
         }
 
-        //Wait for all threads to complete
-        for (threads) |*t| {
-            t.*.join();
-        }
+        try group.await(io);
 
         //Write pixels
         try writer.writeAll(pixelBytes);
