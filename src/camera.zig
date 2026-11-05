@@ -93,7 +93,13 @@ pub const Camera = struct {
     }
 
     ///Handles the threads and write loop
-    pub fn render(self: *Camera, world: *const HittableList, writer: anytype, stderr: anytype) !void {
+    pub fn render(
+        self: *Camera,
+        allocator: std.mem.Allocator,
+        world: *const HittableList,
+        writer: anytype,
+        stderr: anytype,
+    ) !void {
         try self.init();
 
         //PPM file header
@@ -105,12 +111,12 @@ pub const Camera = struct {
 
         //TODO: allow passing number of threads as cli arg instead of getting all of them always
         const numThreads = std.Thread.getCpuCount() catch 1;
-        const threads = try std.heap.c_allocator.alloc(std.Thread, numThreads);
-        defer std.heap.c_allocator.free(threads);
+        const threads = try allocator.alloc(std.Thread, numThreads);
+        defer allocator.free(threads);
 
         // Allocate raw pixel buffer for binary output
-        const pixelBytes = try std.heap.c_allocator.alloc(u8, totalPixels * 3);
-        defer std.heap.c_allocator.free(pixelBytes);
+        const pixelBytes = try allocator.alloc(u8, totalPixels * 3);
+        defer allocator.free(pixelBytes);
 
         //Create shared context
         const ctx = JobContext{

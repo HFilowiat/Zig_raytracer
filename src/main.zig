@@ -34,6 +34,7 @@ const Material = material.Material;
 
 const RenderContext = struct {
     io: std.Io,
+    allocator: std.mem.Allocator,
     world: *HittableList,
 };
 
@@ -118,7 +119,7 @@ fn renderExec(ctx: chilli.CommandContext) !void {
 
     //Render wraped in a clock to measure time, I'm unsure how accurate this is
     const render_start = std.Io.Clock.awake.now(data.io);
-    try cam.render(data.world, out_file, stderr);
+    try cam.render(data.allocator, data.world, out_file, stderr);
     const render_end = std.Io.Clock.awake.now(data.io);
     const render_duration = render_start.durationTo(render_end);
 
@@ -131,12 +132,8 @@ fn renderExec(ctx: chilli.CommandContext) !void {
     try stderr.flush();
 }
 
-pub fn main(init: std.process.Init.Minimal) !void {
-    var threaded = std.Io.Threaded.init(std.heap.page_allocator, .{});
-    defer threaded.deinit();
-    const io = threaded.io();
-
-    const allocator = std.heap.page_allocator;
+pub fn main(init: std.process.Init) !void {
+    const allocator = init.gpa;
 
     //Scene setup
     //TODO: Handling of meshes, and a JSON manifest with positions
@@ -211,9 +208,10 @@ pub fn main(init: std.process.Init.Minimal) !void {
     });
 
     var render_context = RenderContext{
-        .io = io,
+        .io = init.io,
+        .allocator = init.gpa,
         .world = &world,
     };
 
-    try root_cmd.run(init.args, @ptrCast(&render_context));
+    try root_cmd.run(init.minimal.args, @ptrCast(&render_context));
 }
