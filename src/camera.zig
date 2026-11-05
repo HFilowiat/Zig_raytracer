@@ -26,8 +26,8 @@ pub const Camera = struct {
     //public in the original c++
     aspectRatio: f32 = 1.0,
     imageWidth: usize = 100,
-    samplesPerPixel: usize = 10,
-    maxBounceDepth: usize = 10,
+    samplesPerPixel: u32 = 10,
+    maxBounceDepth: u32 = 10,
 
     //private in the original c++
     imageHeight: usize = undefined,
@@ -103,6 +103,7 @@ pub const Camera = struct {
 
         var rowCounter: usize = 0;
 
+        //TODO: allow passing number of threads as cli arg instead of getting all of them always
         const numThreads = std.Thread.getCpuCount() catch 1;
         const threads = try std.heap.c_allocator.alloc(std.Thread, numThreads);
         defer std.heap.c_allocator.free(threads);
@@ -183,7 +184,7 @@ pub const Camera = struct {
         return Ray.init(self.center, rayDirection);
     }
 
-    fn rayColor(self: *Camera, r: Ray, depth: usize, world: *const HittableList) Color {
+    fn rayColor(self: *Camera, r: Ray, depth: u32, world: *const HittableList) Color {
         @setFloatMode(.optimized);
         var currentRay = r;
         var currentDepth = depth;
@@ -202,7 +203,7 @@ pub const Camera = struct {
 
                 //determine if ray bounced or got absorbed
                 if (rec.mat.scatter(currentRay, rec.p, rec.normal, &attenuation, &scattered)) {
-                    //blend the color of what ever has been git with accumulated ray color
+                    //blend the color of whatever has been hit with accumulated ray color
                     accumColor = accumColor * attenuation;
                     currentRay = scattered;
                     currentDepth -= 1;

@@ -35,5 +35,31 @@ zig build
 ## Usage
 Run the built program at `./zig-out/bin/zig_raytracer`.
 
-This renders the default scene to `output.ppm`, in the current working directory.
+```sh
+./zig-out/bin/zig_raytracer [flags]
+```
 
+Available flags:
+
+| Flag | Shortcut | Description | Default |
+|---|---|---|---|
+| `--width` | `-w` | Output image width in pixels | `1920` |
+| `--aspect` | `-a` | Output aspect ratio (width / height) | `1.7777777777777777` (16:9)|
+| `--samples` | `-s` | Samples per pixel | `500` |
+| `--depth` | `-d` | Maximum ray bounce depth | `20` |
+| `--output` | `-o` | Output PPM file path | `output.ppm` |
+
+`--help` and `--version` are also available.
+
+Examples:
+
+```sh
+# Render the default scene with default settings
+./zig-out/bin/zig_raytracer
+
+# Render a smaller and noisier image
+./zig-out/bin/zig_raytracer -w 800 -s 200 -o render.ppm
+
+# Build and run with settings
+zig build run -- -w 800 -s 200 -o render.ppm
+```
