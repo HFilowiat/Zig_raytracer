@@ -1,0 +1,15 @@
+# Materials for scenes/cube.obj.
+# shell: strong Ks + high Ns -> fuzzy metal.
+# trim: no Ks -> lambertian.
+
+newmtl shell
+Ka 0.1 0.1 0.1
+Kd 0.8 0.8 0.8
+Ks 0.9 0.9 0.9
+Ns 400
+d 1
+illum 2
+
+newmtl trim
+Kd 0.2 0.4 0.8
+illum 1

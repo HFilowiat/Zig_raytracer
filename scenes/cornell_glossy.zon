@@ -1,0 +1,29 @@
+.{
+    // Glossy Cornell Box: a glossy sphere and short block (Ks 0.8-0.9,
+    // Ns 40).
+    //
+    // Source: Williams College Cornell Box data, exported from 3ds Max in 2012,
+    // CC BY 3.0. See scenes/Cornell_boxes/LICENSE-CC-BY-3.0.txt for the
+    // license and scenes/Cornell_boxes/copyright.txt for the provenance.
+    //
+    // NOTE: mapMtl derives fuzz from
+    // `1 - Ns / 1000`, so Ns 40 yields fuzz 0.96: these surfaces read as
+    // very rough metal rather than glossy. The `light` material was added to
+    // CornellBox-Glossy.mtl for this project because the shipped .mtl omits
+    // it, which left the room without an emitter.
+    //
+    // This set's emitter is `Ke 1`, far dimmer than the `Ke 10`-`Ke 17` lights
+    // in the other boxes, expect a dark image; raise --samples rather than
+    // changing the emission. The ceiling is at 1.59, hence the lower height
+    // camera.
+    .camera = .{
+        .lookfrom = .{ 0.0, 0.795, 2.92 },
+        .lookat = .{ 0.0, 0.795, 0.0 },
+        .vup = .{ 0.0, 1.0, 0.0 },
+        .vfov = 40.0,
+    },
+    .background = .{ 0.0, 0.0, 0.0 },
+    .objects = .{
+        .{ .mesh = .{ .path = "Cornell_boxes/CornellBox-Glossy.obj" } },
+    },
+}

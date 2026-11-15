@@ -1,0 +1,44 @@
+.{
+    // A small showcase scene
+    // primitives plus an OBJ+MTL mesh
+    .camera = .{
+        .lookfrom = .{ 2.1, 1.75, 2.6 },
+        .lookat = .{ 0.0, 0.2, 0.0 },
+        .vup = .{ 0.0, 1.0, 0.0 },
+        .vfov = 60.0,
+    },
+    .materials = .{
+        // 0: floor
+        .{ .lambertian = .{ .albedo = .{ 0.5, 0.5, 0.5 } } },
+        // 1: box
+        .{ .lambertian = .{ .albedo = .{ 0.8, 0.2, 0.2 } } },
+        // 2: metal sphere
+        .{ .metal = .{ .albedo = .{ 0.9, 0.9, 0.9 }, .fuzz = 0.05 } },
+        // 3: lamp
+        .{ .emissive = .{ .color = .{ 1.0, 0.9, 0.7 } } },
+        // 4: glass sphere
+        .{ .dielectric = .{ .ior = 1.5 } },
+    },
+    .objects = .{
+        .{ .quad = .{
+            .a = .{ -5.0, -0.5, -5.0 },
+            .b = .{ 5.0, -0.5, -5.0 },
+            .c = .{ 5.0, -0.5, 5.0 },
+            .d = .{ -5.0, -0.5, 5.0 },
+            .material = 0,
+        } },
+        .{ .box = .{
+            .min = .{ -0.5, -0.5, -1.5 },
+            .max = .{ 0.5, 0.5, -0.5 },
+            .material = 1,
+        } },
+        .{ .sphere = .{ .center = .{ 1.5, -0.2, -1.0 }, .radius = 0.3, .material = 2 } },
+        .{ .sphere = .{ .center = .{ -1.5, -0.2, -1.0 }, .radius = 0.3, .material = 4 } },
+        .{ .sphere = .{ .center = .{ 0.0, 1.5, -2.0 }, .radius = 0.2, .material = 3 } },
+        .{ .mesh = .{
+            .path = "cube.obj",
+            .fit_size = 1.0,
+            .translate = .{ 0.0, 0.0, -2.5 },
+        } },
+    },
+}

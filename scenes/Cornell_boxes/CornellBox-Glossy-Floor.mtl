@@ -1,0 +1,111 @@
+# The glossy floor Cornell Box material library.
+# Part of the Cornell Box set from Williams College (see copyright.txt).
+# Note that the real box is not a perfect cube, so
+# the faces are imperfect in this data set.
+#
+# Source: http://graphics.cs.williams.edu/data
+# License: CC BY 3.0 (see LICENSE-CC-BY-3.0.txt)
+# Original Cornell Box data: http://www.graphics.cornell.edu/online/box/data.html
+# Exported from 3ds Max with Wavefront OBJ Exporter v0.97b
+# (c) 2007 guruware, 2012-12-05.
+# Note: unused as shipped, because CornellBox-Glossy-Floor.obj
+# references CornellBox-Glossy.mtl instead. Kept for reference.
+# Dataset attribution: Guedis Cardenas and Morgan McGuire, Williams College
+#
+# SPDX-License-Identifier: CC-BY-3.0
+
+newmtl sphere
+	Ns 32.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.4860 0.6310 0.6630
+	Kd 0.4860 0.6310 0.6630
+	Ks 0.7000 0.7000 0.7000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl shortBox
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7250 0.7100 0.6800
+	Kd 0.7250 0.7100 0.6800
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl floor
+	Ns 32.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7250 0.7100 0.6800
+	Kd 0.7250 0.7100 0.6800
+	Ks 0.3000 0.3000 0.3000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl ceiling
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7250 0.7100 0.6800
+	Kd 0.7250 0.7100 0.6800
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl backWall
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7250 0.7100 0.6800
+	Kd 0.7250 0.7100 0.6800
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl rightWall
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.3725 0.6480 0.3137
+	Kd 0.3725 0.6480 0.3137
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl leftWall
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.6300 0.0650 0.0500
+	Kd 0.6300 0.0650 0.0500
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+
+newmtl light
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.7800 0.7800 0.7800
+	Kd 0.7800 0.7800 0.7800
+	Ks 0.0000 0.0000 0.0000
+	Ke 1.0000 1.0000 1.0000

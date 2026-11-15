@@ -1,0 +1,18 @@
+.{
+    // Sphere Cornell Box: a mirror sphere and a glass sphere (Ni 2.5).
+    //
+    // Source: Williams College Cornell Box data, created by Guedis Cardenas
+    // and Morgan McGuire (2011), CC BY 3.0. See
+    // scenes/Cornell_boxes/LICENSE-CC-BY-3.0.txt for the license and
+    // scenes/Cornell_boxes/copyright.txt for the provenance.
+    .camera = .{
+        .lookfrom = .{ 0.0, 0.795, 2.92 },
+        .lookat = .{ 0.0, 0.795, 0.0 },
+        .vup = .{ 0.0, 1.0, 0.0 },
+        .vfov = 40.0,
+    },
+    .background = .{ 0.0, 0.0, 0.0 },
+    .objects = .{
+        .{ .mesh = .{ .path = "Cornell_boxes/CornellBox-Sphere.obj" } },
+    },
+}
